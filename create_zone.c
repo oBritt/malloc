@@ -3,12 +3,12 @@
 
 
 static block_t *create_default_block(zone_t *zone) {
-    block_t *block = (block_t *)(zone + 1);
+    block_t *block = (block_t *)(((intptr_t)zone) + allign_size(sizeof(zone_t)));
     block->free = 1;
     block->next = NULL;
     block->prev = NULL;
-    block->size = zone->size - sizeof(zone_t) - sizeof(block_t);
-    
+    block->size = zone->size - allign_size(sizeof(zone_t)) - allign_size(sizeof(block_t));
+    block->alligned_size = block->size;
     return block;
 }
 
@@ -19,8 +19,9 @@ static zone_t *create_tiny_zone(size_t size) {
 
     zone->type = TINY;
     zone->next = NULL;
-    zone->blocks = create_default_block(zone);
     zone->size = zone_size;
+    zone->blocks = create_default_block(zone);
+    zone->prev = NULL; 
     return zone;
 }
 
@@ -31,8 +32,9 @@ static zone_t *create_small_zone(size_t size) {
 
     zone->type = SMALL;
     zone->next = NULL;
-    zone->blocks = create_default_block(zone);
     zone->size = zone_size;
+    zone->blocks = create_default_block(zone);
+    zone->prev = NULL; 
     return zone;
 }
 
@@ -40,9 +42,10 @@ static zone_t *create_large_zone(size_t size) {
     zone_t* zone = allocate_memory(size + sizeof(zone_t));
 
     zone->type = LARGE;
-    zone->size = size + sizeof(zone_t);
+    zone->size = allign_size(size) + sizeof(zone_t);
     zone->blocks = create_default_block(zone);
     zone->next = NULL;
+    zone->prev = NULL; 
     return zone;
 }
 

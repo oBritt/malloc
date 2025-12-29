@@ -12,3 +12,7 @@ void *allocate_memory(size_t size) {
     }
     return ptr;
 }
+
+void deallocate_memory(void *ptr, size_t size) {
+    munmap(ptr, size);
+}

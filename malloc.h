@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
+#include <inttypes.h>
+#include <limits.h>
 
 typedef enum {
     TINY,
@@ -17,7 +19,8 @@ typedef enum {
 typedef struct s_block
 {
     size_t size;
-    int free;
+    size_t alligned_size;
+    uint8_t free;
     struct s_block *next;
     struct s_block *prev;
 }   block_t;
@@ -27,6 +30,7 @@ typedef struct s_zone {
     size_t size;
     zonetype_t type;
     struct s_zone *next;
+    struct s_zone *prev;
     block_t *blocks;
 }   zone_t;
 
@@ -42,8 +46,18 @@ size_t get_size_of_tiny();
 size_t get_size_of_small();
 zonetype_t get_zone_base_on_size(size_t size);
 void *allocate_memory(size_t size);
+void deallocate_memory(void *ptr, size_t size);
 zone_t *create_zone(size_t size, zonetype_t type);
 zone_t *find_free_zone(zone_t *zones, size_t size, zonetype_t type);
 void insert_zone(zone_t **zones, zone_t* zone);
+block_t *create_block(zone_t *zone, size_t size);
+void *malloc(size_t size);
+void free(void *ptr);
+zone_t *get_zone(void *ptr);
+void free_block(zone_t **zones, zone_t* zone, block_t* block);
 
+void print_allocated(zone_t *zones);
+void show_alloc_mem();
+void print_hexa(size_t number);
+void print_decimal(size_t number);
 #endif
