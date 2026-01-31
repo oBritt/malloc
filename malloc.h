@@ -41,6 +41,11 @@ typedef struct s_zone {
 #define ALLIGNMENT 16   // must be power of 2
 
 
+void *malloc(size_t size);
+void free(void *ptr);
+void show_alloc_mem();
+void show_alloc_mem_ex();
+
 size_t allign_size(size_t size);
 size_t get_size_of_tiny();
 size_t get_size_of_small();
@@ -51,13 +56,14 @@ zone_t *create_zone(size_t size, zonetype_t type);
 zone_t *find_free_zone(zone_t *zones, size_t size, zonetype_t type);
 void insert_zone(zone_t **zones, zone_t* zone);
 block_t *create_block(zone_t *zone, size_t size);
-void *malloc(size_t size);
-void free(void *ptr);
+
 zone_t *get_zone(void *ptr);
 void free_block(zone_t **zones, zone_t* zone, block_t* block);
-
+void print_string(const char *str);
 void print_allocated(zone_t *zones);
-void show_alloc_mem();
+
+
+
 void print_hexa(size_t number);
 void print_decimal(size_t number);
 #endif

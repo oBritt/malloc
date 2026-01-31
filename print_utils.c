@@ -43,3 +43,7 @@ void print_hexa(size_t number) {
         write(1, "0", 1);
     }
 }
+
+void print_string(const char *str) { 
+    write(1, str, ft_strlen(str));
+}

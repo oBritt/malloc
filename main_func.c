@@ -35,5 +35,9 @@ void free(void *ptr) {
 }
 
 void show_alloc_mem() {
-    print_allocated(g_zones);
+    print_allocated(g_zones, false);
+}
+
+void show_alloc_mem_ex() {
+    print_allocated(g_zones, true);
 }
