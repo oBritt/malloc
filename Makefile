@@ -21,7 +21,8 @@ SRC = \
 	print_allocated.c \
 	print_utils.c \
 	size_utils.c \
-	zone_utils.c 
+	zone_utils.c \
+	realloc_util.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -43,6 +43,7 @@ typedef struct s_zone {
 
 void *malloc(size_t size);
 void free(void *ptr);
+void *realloc(void *ptr, size_t size);
 void show_alloc_mem();
 void show_alloc_mem_ex();
 
@@ -60,10 +61,10 @@ block_t *create_block(zone_t *zone, size_t size);
 zone_t *get_zone(void *ptr);
 void free_block(zone_t **zones, zone_t* zone, block_t* block);
 void print_string(const char *str);
-void print_allocated(zone_t *zones);
+void print_allocated(zone_t *zones, int detail);
+void realloc_take_next_block(zone_t *zone, block_t *block, size_t size);
 
-
-
+void print_str(char *str);
 void print_hexa(size_t number);
 void print_decimal(size_t number);
 #endif

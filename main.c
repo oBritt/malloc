@@ -4,21 +4,17 @@
 
 int main() {
 
-    void *t = malloc(12321312);
     void *ptr[4]; 
     for (int i = 0; i < 4; i++) {
-        ptr[i] = malloc(290 * (1 + i));
+        if (i == 1) {
+            ptr[i] = malloc(580);
+            continue;
+        }
+        ptr[i] = malloc(290);
     }
-    show_alloc_mem();
-    free(t);
-    show_alloc_mem();
+    show_alloc_mem_ex();
     free(ptr[1]);
-    show_alloc_mem();
-    free(ptr[2]);
-    show_alloc_mem();
-    free(ptr[3]);
-    show_alloc_mem();
-    free(ptr[0]);
-    show_alloc_mem();
-
+    show_alloc_mem_ex();
+    ptr[0] = realloc(ptr[0], 500);
+    show_alloc_mem_ex();
 }

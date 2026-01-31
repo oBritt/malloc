@@ -44,6 +44,6 @@ void print_hexa(size_t number) {
     }
 }
 
-void print_string(const char *str) { 
+void print_str(char *str) { 
     write(1, str, ft_strlen(str));
 }
