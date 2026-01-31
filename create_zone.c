@@ -52,7 +52,6 @@ static zone_t *create_large_zone(size_t size) {
 zone_t *create_zone(size_t size, zonetype_t type) {
     static int first = 1;
     static zone_t *(*func_ptr[3])(size_t);
-
     if (first) {
         first = 0;
         func_ptr[TINY] = create_tiny_zone;

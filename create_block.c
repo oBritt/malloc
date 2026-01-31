@@ -54,6 +54,7 @@ static block_t *create_block_tiny_small(zone_t *zone, size_t size) {
 static block_t *create_block_large(zone_t *zone, size_t size) {
     block_t *out;
 
+    (void)size;
     out = zone->blocks;
     out->free = 0;
     return out;

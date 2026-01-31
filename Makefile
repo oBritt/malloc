@@ -1,71 +1,49 @@
-# =========================
-# Project name
-# =========================
-
-NAME_BASE    = libft_malloc
-LIB_NAME     = $(NAME_BASE)_$(HOSTTYPE).so
-SYMLINK_NAME = $(NAME_BASE).so
-
-# =========================
-# Compiler
-# =========================
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -fPIC -fvisibility=hidden
+CFLAGS  = -Wall -Wextra -Werror -fPIC -O0 -g
 LDFLAGS = -shared
 
-# =========================
-# Directories
-# =========================
-
-SRC_DIR = src
-OBJ_DIR = obj
-INC_DIR = includes
-
-# =========================
-# Sources
-# =========================
-
-SRCS = \
-	$(SRC_DIR)/malloc.c \
-	$(SRC_DIR)/free.c \
-	$(SRC_DIR)/realloc.c \
-	$(SRC_DIR)/zone.c \
-	$(SRC_DIR)/block.c \
-	$(SRC_DIR)/show_alloc_mem.c
-
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-
-# =========================
-# HOSTTYPE
-# =========================
 
 ifeq ($(HOSTTYPE),)
-HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-# =========================
-# Rules
-# =========================
+NAME    = libft_malloc_$(HOSTTYPE).so
+SYMLINK = libft_malloc.so
 
-all: $(LIB_NAME) symlink
 
-$(LIB_NAME): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS)
+SRC = \
+	allocation.c \
+	create_block.c \
+	create_zone.c \
+	free_utils.c \
+	main_func.c \
+	print_allocated.c \
+	print_utils.c \
+	size_utils.c \
+	zone_utils.c 
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+OBJ = $(SRC:.c=.o)
 
-symlink:
-	ln -sf $(LIB_NAME) $(SYMLINK_NAME)
+.PHONY: all clean fclean re
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) $(LDFLAGS) -o $@ $(OBJ)
+	@rm -f $(SYMLINK)
+	@ln -s $(NAME) $(SYMLINK)
+	@echo "✔ libft_malloc built: $(NAME)"
+
+%.o: %.c malloc.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@rm -f $(OBJ)
+	@echo "✔ Objects removed"
 
 fclean: clean
-	rm -f $(LIB_NAME) $(SYMLINK_NAME)
+	@rm -f $(NAME) $(SYMLINK)
+	@echo "✔ Library removed"
 
 re: fclean all
-
-.PHONY: all clean fclean re symlink
