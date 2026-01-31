@@ -1,7 +1,7 @@
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -fPIC -O0 -g
-LDFLAGS = -shared
+CFLAGS  = -Wall -Wextra -Werror -fPIC -O0 -g -pthread
+LDFLAGS = -shared -pthread
 
 
 ifeq ($(HOSTTYPE),)
@@ -16,13 +16,16 @@ SRC = \
 	allocation.c \
 	create_block.c \
 	create_zone.c \
-	free_utils.c \
+	free.c \
 	main_func.c \
 	print_allocated.c \
 	print_utils.c \
 	size_utils.c \
 	zone_utils.c \
-	realloc_util.c
+	realloc.c \
+	debug.c \
+	str_utils.c \
+	malloc.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -71,3 +71,22 @@ void free_block(zone_t **zones, zone_t *zone, block_t *block) {
     }
     func_ptr[zone->type](zones, zone, block);
 }
+
+void unsafe_free(zone_t **zones, void *ptr) {
+    zone_t *zone;
+    block_t *block;
+    uintptr_t saved = (uintptr_t)ptr;
+    if (!ptr) {
+        return;
+    }
+
+    zone = get_zone(ptr);
+    block = (block_t *)((intptr_t)ptr - allign_size(sizeof(block_t)));
+    free_block(zones, zone, block);
+
+    if (get_debug()->debug) {
+        print_str("[Malloc] freed address: ");
+        print_hexa(saved);
+        print_str("\n");
+    }
+}

@@ -26,7 +26,9 @@ void print_block(block_t* block, size_t *total, int detail) {
         if (block->free == 1) {
             print_str(" (not used)\n");
         }  else {
-            print_str(" (used)\n");
+            print_str(" (used) ");
+            print_decimal(block->alligned_size);
+            print_str(" (alligned)\n");
         }
     }
 }

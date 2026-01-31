@@ -3,64 +3,40 @@
 
 
 zone_t *g_zones = NULL;
-
+pthread_mutex_t g_malloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *malloc(size_t size) {
-    zone_t *zone = NULL;
-    block_t *block = NULL;
-
-    zonetype_t type = get_zone_base_on_size(size);
-    
-    zone = find_free_zone(g_zones, size, type);
-    if (!zone) {
-        zone = create_zone(size, type);
-        if (!zone) {
-            return NULL;
-        }
-        insert_zone(&g_zones, zone);
-    }
-
-    block = create_block(zone, size);
-    
-    return (block_t *)((intptr_t)block + allign_size(sizeof(block_t))); 
+    void *out;
+    pthread_mutex_lock(&g_malloc_mutex);
+    out = unsafe_malloc(&g_zones, size);
+    pthread_mutex_unlock(&g_malloc_mutex);
+    return out;
 }
 
 void *realloc(void *ptr, size_t size) {
-    block_t *block;
-    zone_t *zone;
-    void *new_ptr;
-
-    zone = get_zone(ptr);
-    block = (block_t *)((intptr_t)ptr - allign_size(sizeof(block_t)));
-    if (size <= block->alligned_size) {
-        block->size = size;
-        return ptr;
-    }
-    if (zone->type != LARGE) {
-        if (block->next && block->next->free 
-            && block->next->alligned_size + block->alligned_size + allign_size(sizeof(block_t)) >= size) {
-            realloc_take_next_block(zone, block, size);
-            return ptr;
-        }
-    }
-    free(ptr);
-    new_ptr = malloc(size);
-    return new_ptr;
+    void *out;
+    pthread_mutex_lock(&g_malloc_mutex);
+    out = unsafe_realloc(&g_zones, ptr, size);
+    pthread_mutex_unlock(&g_malloc_mutex);
+    return out;
 }
 
 void free(void *ptr) {
-    zone_t *zone;
-    block_t *block;
-
-    zone = get_zone(ptr);
-    block = (block_t *)((intptr_t)ptr - allign_size(sizeof(block_t)));
-    free_block(&g_zones, zone, block);
+    pthread_mutex_lock(&g_malloc_mutex);
+    unsafe_free(&g_zones, ptr);
+    pthread_mutex_unlock(&g_malloc_mutex);
 }
 
 void show_alloc_mem() {
+    pthread_mutex_lock(&g_malloc_mutex);
     print_allocated(g_zones, 0);
+    pthread_mutex_unlock(&g_malloc_mutex);
+
 }
 
 void show_alloc_mem_ex() {
+    pthread_mutex_lock(&g_malloc_mutex);
     print_allocated(g_zones, 1);
+    pthread_mutex_unlock(&g_malloc_mutex);
+
 }
