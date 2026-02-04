@@ -44,8 +44,8 @@ typedef struct s_debug_config {
 } debug_config_t;
 
 #define MINIMUM_AMOUNT_OF_BLOCKS 100
-#define TINY_MAX 256 // 2 ^ 8 
-#define SMALL_MAX 65536 // 2 ^ 16
+#define TINY_MAX 1024 // 2 ^ 10 
+#define SMALL_MAX 131072 // 2 ^ 16
 
 #define ALLIGNMENT 16   // must be power of 2
 

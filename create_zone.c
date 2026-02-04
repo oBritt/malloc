@@ -39,10 +39,13 @@ static zone_t *create_small_zone(size_t size) {
 }
 
 static zone_t *create_large_zone(size_t size) {
-    zone_t* zone = allocate_memory(size + sizeof(zone_t));
+
+    size_t total = size + allign_size(sizeof(zone_t)) + allign_size(sizeof(block_t));
+    total = (total / getpagesize() + 1) * getpagesize();
+    zone_t* zone = allocate_memory(total);
 
     zone->type = LARGE;
-    zone->size = allign_size(size) + sizeof(zone_t);
+    zone->size = total;
     zone->blocks = create_default_block(zone);
     zone->next = NULL;
     zone->prev = NULL; 

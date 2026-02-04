@@ -24,13 +24,16 @@ void print_block(block_t* block, size_t *total, int detail) {
 
     if (detail) {
         if (block->free == 1) {
-            print_str(" (not used)\n");
+            print_str(" (not used)");
         }  else {
             print_str(" (used) ");
             print_decimal(block->alligned_size);
-            print_str(" (alligned)\n");
+            print_str(" (alligned)");
         }
+    } else {
+        print_str(" bytes");
     }
+    print_str("\n");
 }
 
 

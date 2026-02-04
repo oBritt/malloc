@@ -45,6 +45,8 @@ void insert_zone(zone_t **zones, zone_t* zone) {
             cur->prev = zone;
             return;
         }
+        prev = cur;
+        cur = cur->next;
     }
     prev->next = zone;
     zone->prev = prev;

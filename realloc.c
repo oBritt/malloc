@@ -48,6 +48,12 @@ static void fill_zeros(void *ptr, size_t size, size_t original) {
     }
 }
 
+static void fill(void *dst, void *src, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        ((char *)dst)[i] = ((char *)src)[i];
+    }
+}
+
 void *unsafe_realloc(zone_t **zones, void *ptr, size_t size) {
     block_t *block;
     zone_t *zone;
@@ -74,7 +80,8 @@ void *unsafe_realloc(zone_t **zones, void *ptr, size_t size) {
             return ptr;
         }
     }
-    unsafe_free(zones, ptr);
     new_ptr = unsafe_malloc(zones, size);
+    fill(new_ptr, ptr, original_size);
+    unsafe_free(zones, ptr);
     return new_ptr;
 }
