@@ -8,22 +8,22 @@ void print_block(block_t* block, size_t *total, int detail) {
 
     ptr = (intptr_t)block;
     start = ptr + allign_size(sizeof(block_t));
-    end = start + block->size;
+    end = start + get_size(block);
 
-    if (!detail && block->free) {
+    if (!detail && get_free(block)) {
         return;
     }
-    if (!block->free) {
-        *total += block->size;
+    if (!get_free(block)) {
+        *total += get_size(block);
     }
     print_hexa(start);
     print_str(" - ");
     print_hexa(end);
     print_str(" : ");
-    print_decimal(block->size);
+    print_decimal(get_size(block));
 
     if (detail) {
-        if (block->free == 1) {
+        if (get_free(block)) {
             print_str(" (not used)");
         }  else {
             print_str(" (used) ");

@@ -11,7 +11,7 @@ zone_t *find_free_zone(zone_t *zones, size_t size, zonetype_t type) {
         if (type == ptr->type) {
             block_t *block_ptr = ptr->blocks;
             while (block_ptr) {
-                if (block_ptr->free && block_ptr->alligned_size >= allign_size(size)) {
+                if (get_free(block_ptr) && block_ptr->alligned_size >= allign_size(size)) {
                     return ptr;
                 }
                 block_ptr = block_ptr->next;

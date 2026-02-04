@@ -10,9 +10,10 @@ static void handle_split(block_t *block, size_t size) {
     if (next_block->alligned_size >= needed_from_next) {
         block_t *remaining_block = (block_t *)((char *)next_block + needed_from_next + allign_size(sizeof(block_t)));
         
-        remaining_block->size = next_block->alligned_size - needed_from_next - allign_size(sizeof(block_t));
-        remaining_block->alligned_size = remaining_block->size;
-        remaining_block->free = 1;
+        size_t remain_s = next_block->alligned_size - needed_from_next - allign_size(sizeof(block_t));
+        remaining_block->alligned_size = remain_s;
+        set_size(remaining_block, remain_s);
+        set_free(remaining_block, 1);
 
         remaining_block->next = next_block->next;
         remaining_block->prev = block;
@@ -20,14 +21,13 @@ static void handle_split(block_t *block, size_t size) {
 
         block->next = remaining_block;
         block->alligned_size = new_size_aligned;
-        block->size = size;
-
+        set_size(block, size);
     } else {
         block->next = block->next->next;
         if (block->next) {
             block->next->prev = block;
         }
-        block->size = size;
+        set_size(block, size);
         block->alligned_size = old_block_size + allign_size(sizeof(block_t)) + next_block->alligned_size;
     }
 }
@@ -64,15 +64,15 @@ void *unsafe_realloc(zone_t **zones, void *ptr, size_t size) {
     }
     zone = get_zone(ptr);
     block = (block_t *)((intptr_t)ptr - allign_size(sizeof(block_t)));
-    size_t original_size = block->size;
+    size_t original_size = get_size(block);
     if (size <= block->alligned_size) {
-        block->size = size;
+        set_size(block, size);
         print_debug(ptr, size);
         fill_zeros(ptr, size, original_size);
         return ptr;
     }
     if (zone->type != LARGE) {
-        if (block->next && block->next->free 
+        if (block->next && get_free(block->next)
             && block->next->alligned_size + block->alligned_size + allign_size(sizeof(block_t)) >= size) {
             handle_split(block, size);
             print_debug(ptr, size);

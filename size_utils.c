@@ -9,14 +9,14 @@ size_t get_size_of_tiny() {
     size_t page_size = getpagesize();
     size_t block_size = TINY_MAX + allign_size(sizeof(block_t));
     size_t total_size = block_size * MINIMUM_AMOUNT_OF_BLOCKS + allign_size(sizeof(zone_t));
-    return ((total_size / page_size) + 1) * page_size * 2;
+    return ((total_size / page_size) + 1) * page_size;
 }
 
 size_t get_size_of_small() {
     size_t page_size = getpagesize();
     size_t block_size = SMALL_MAX + allign_size(sizeof(block_t));
     size_t total_size = block_size * MINIMUM_AMOUNT_OF_BLOCKS + allign_size(sizeof(zone_t));
-    return ((total_size / page_size) + 1) * page_size * 2;
+    return ((total_size / page_size) + 1) * page_size;
 }
 
 

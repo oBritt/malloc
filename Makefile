@@ -25,7 +25,8 @@ SRC = \
 	realloc.c \
 	debug.c \
 	str_utils.c \
-	malloc.c
+	malloc.c \
+	block_util.c
 
 OBJ = $(SRC:.c=.o)
 

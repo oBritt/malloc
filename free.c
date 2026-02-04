@@ -34,20 +34,39 @@ void join_blocks(block_t *cur, block_t *next) {
         next->next->prev = cur;
     }
     cur->alligned_size += next->alligned_size + allign_size(sizeof(block_t));
-    cur->size = cur->alligned_size;
+    set_size(cur, cur->alligned_size);
+}
+
+size_t count_zone_of_type_empty(zone_t **zones, zonetype_t type) {
+    size_t out = 0;
+    zone_t *cur = *zones;
+    while (cur)
+    {
+        if (cur->type == type) {
+            if (cur->blocks->prev == NULL && cur->blocks->next == NULL && get_free(cur->blocks)) {
+                out++;
+            }
+        }
+        cur = cur->next;
+    }
+    return out;
 }
 
 void free_tiny_small_zone(zone_t **zones, zone_t *zone, block_t *block) {
-    block->free = 1;
-    block->size = block->alligned_size;
-    if (block->next && block->next->free) {
+    set_free(block, 1);
+    set_size(block, block->alligned_size);
+    if (block->next && get_free(block->next)) {
         join_blocks(block, block->next);
     } 
-    if (block->prev && block->prev->free) {
+    if (block->prev && get_free(block->prev)) {
+        block_t *temp = block->prev;
         join_blocks(block->prev, block);
-        block = block->prev;
+        block = temp;
     }
-    if (!block->prev && !block->next) {
+    if (zone->type == LARGE) {
+        free_zone(zones, zone);
+    }
+    else if (!block->prev && !block->next && count_zone_of_type_empty(zones, zone->type) > 1) {
         free_zone(zones, zone);
     }
 }

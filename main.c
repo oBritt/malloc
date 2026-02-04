@@ -74,8 +74,38 @@ void test_5() {
     show_alloc_mem(); 
 }
 
-int main() {
-    dprintf(1, "%ld\n", get_size_of_tiny);
-    test_5();
+void test1(){
+    int   i;
+    char  *addr;
 
+    i = 0;
+    while (i < 1024)
+    {
+        addr = (char*)malloc(1024);
+        if (addr == NULL)
+        {
+            print_str("Failed to allocate memory\n");
+            return (1);
+        }
+        addr[0] = 42;
+        i++;
+    }
+    return (0);
+}
+
+void test0() {
+    int   i;
+    char  *addr;
+
+    i = 0; 
+    while (i < 1024) 
+    {
+        i++;
+    } 
+    return (0); 
+}
+
+int main() {
+    test1();
+    show_alloc_mem_ex();
 }
