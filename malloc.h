@@ -23,7 +23,6 @@ typedef struct s_block
 {
     size_t size;
     size_t alligned_size;
-    uint8_t free;
     struct s_block *next;
     struct s_block *prev;
 }   block_t;
@@ -43,7 +42,7 @@ typedef struct s_debug_config {
     int zero_alloc;
 } debug_config_t;
 
-#define MINIMUM_AMOUNT_OF_BLOCKS 100
+#define MINIMUM_AMOUNT_OF_BLOCKS 127
 #define TINY_MAX 1024 // 2 ^ 10 
 #define SMALL_MAX 131072 // 2 ^ 16
 
@@ -60,6 +59,10 @@ void *unsafe_realloc(zone_t **zones, void *ptr, size_t size);
 void unsafe_free(zone_t **zones, void *ptr);
 void *unsafe_malloc(zone_t **zones, size_t size);
 
+void set_free(block_t* block, int value);
+int get_free(block_t* block);
+size_t get_size(block_t* block);
+void set_size(block_t* block, size_t value);
 
 size_t allign_size(size_t size);
 size_t get_size_of_tiny();
